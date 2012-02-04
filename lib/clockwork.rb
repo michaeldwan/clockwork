@@ -55,8 +55,9 @@ module Clockwork
     def initialize(period, job, block, options={})
       @period = period
       @job = job
-      @at = At.parse(options[:at])
+      @at = At.parse(options.delete(:at))
       @last = nil
+      @options = options
       @block = block
     end
 
@@ -71,7 +72,7 @@ module Clockwork
 
     def run(t)
       @last = t
-      @block.call(@job)
+      @block.call(@job, @options.dup)
     rescue => e
       log_error(e)
     end
